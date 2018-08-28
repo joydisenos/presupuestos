@@ -8,27 +8,26 @@ use Maatwebsite\Excel\Concerns\FromView;
 use App\Config;
 use App\Presupuesto;
 
-class PresupuestoExport implements FromView
+class MaterialesCountExport implements FromView
 {
     /**
     * @return \Illuminate\Support\Collection
     */
    	
-    private $presupuesto;
-   	private $configuraciones;
+    private $materiales;
 
-	public function __construct($presupuesto)
+	public function __construct($materiales)
 	{
-        $this->presupuesto = $presupuesto;
+        $this->materiales = $materiales;
 	}
 
     public function view(): View
     {
 		$configuraciones = Config::first();
 
-        return view('export.presupuesto', [
+        return view('export.materialescount', [
         	'configuraciones' => $configuraciones,
-            'presupuesto' => $this->presupuesto,
+            'materiales' => $this->materiales,
         ]);
     }
 }

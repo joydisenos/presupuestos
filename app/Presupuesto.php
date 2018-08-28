@@ -10,4 +10,9 @@ class Presupuesto extends Model
     {
         return $this->hasMany(Presupuestopartida::class);
     }
+
+    public function materiales()
+    {
+    	return $this->hasMany(PresupuestoMaterial::class);
+    }
 }

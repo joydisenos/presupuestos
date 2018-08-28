@@ -18,10 +18,19 @@ class CreatePresupuestopartidasTable extends Migration
             $table->integer('partida_id');
             $table->integer('presupuesto_id');
             $table->string('unidad');
-            $table->float('cantidad')->default(0);
+            $table->string('numero');
+            $table->string('campo1');
+            $table->float('valor1');
+            $table->string('campo2');
+            $table->float('valor2');
+            $table->string('campo3');
+            $table->float('valor3');
+            $table->float('cantidad')->default(1);
             $table->float('total_materiales')->default(0);
-            $table->float('indirecto')->default(0);
-            $table->float('mano')->default(0);
+            $table->float('total')->default(0);
+            $table->integer('indirecto_id')->default(0);
+            $table->integer('mano_id')->default(0);
+            $table->integer('estatus')->default(1);
             $table->timestamps();
         });
     }

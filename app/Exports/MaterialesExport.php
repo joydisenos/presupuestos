@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 use App\Config;
 use App\Presupuesto;
 
-class PresupuestoExport implements FromView
+class MaterialesExport implements FromView
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -26,7 +26,7 @@ class PresupuestoExport implements FromView
     {
 		$configuraciones = Config::first();
 
-        return view('export.presupuesto', [
+        return view('export.materiales', [
         	'configuraciones' => $configuraciones,
             'presupuesto' => $this->presupuesto,
         ]);

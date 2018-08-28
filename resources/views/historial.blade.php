@@ -45,7 +45,8 @@
                                         <th>Nombre</th>
                                         <th>Fecha</th>
                                         <th>Total</th>
-                                        <th>Ver / Editar</th>
+                                        <th>Editar / Eliminar</th>
+                                        <th>Exportar</th>
                                         
                                     </tr>
                                 </thead>
@@ -62,12 +63,21 @@
                                     		{{$presupuesto->created_at->format('d-m-Y')}}
                                     	</td>
                                     	<td>
-                                    		{{$presupuesto->total}}
+                                    		${{$presupuesto->total}}
                                     	</td>
                                     	<td>
                                            
                                     		<a href="{{url('presupuesto').'/'.$presupuesto->id}}" class="btn btn-primary"> <i class="fa fa-edit"></i> </a>
+                                            <a href="{{url('eliminar/presupuesto').'/'.$presupuesto->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
                                     	</td>
+                                        <td>
+                                            <a class="btn btn-success" href="{{url('exportar/presupuesto').'/'.$presupuesto->id}}">
+                                                Excel
+                                            </a>
+                                            <a href="{{url('exportar/materiales').'/'.$presupuesto->id}}" class="btn btn-success">
+                                             Desglose unitario
+                                            </a>
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

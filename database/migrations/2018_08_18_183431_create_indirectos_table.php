@@ -17,6 +17,7 @@ class CreateIndirectosTable extends Migration
             $table->increments('id');
             $table->string('nombre');
             $table->float('precio');
+            $table->integer('estatus')->default(1);
             $table->timestamps();
         });
     }

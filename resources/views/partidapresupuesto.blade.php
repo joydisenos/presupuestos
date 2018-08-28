@@ -10,17 +10,32 @@
                     @include('includes.error')
                     @include('includes.errors')
                     @include('includes.notificacion')
-                
-<div class="row">
-    <div class="col-md-8">
-        <h3>Partida: {{$partida->nombre}}</h3>
-    </div>
-    <div class="col-md-4">
-        <label for="">Editar nombre</label>
-       <input type="text" id="nombrepartida" value="{{$partida->nombre}}" class="form-control form-control-lg">
-    </div>
-</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h1>Partida: {{$partida->partida->nombre}}</h1>
+                        <h1>presupuesto: {{$partida->presupuesto->id}}</h1>
+                    </div>
 
+                   <!-- <div class="col-md-3">
+                        <label for="">Nombre</label>
+                       <input type="text" id="nombrepartida" value="{{$partida->partida->nombre}}" class="form-control form-control-lg">
+                    </div>
+                    -->
+                    <div class="col-md-3">
+                        <a href="{{url('presupuesto').'/'.$partida->presupuesto_id}}" class="btn btn-primary">Volver al presupuesto</a>
+                    </div>
+                    <!-- /.col-lg-12 -->
+
+
+                </div>             
+
+                    
+
+
+                  
+
+                
+                <!-- /.row -->
 <div class="row">
     <div class="col-md-6">
         <h3>Cantidad Global</h3>
@@ -100,8 +115,9 @@
                             <input type="text" id="filtro" class="form-control">
                     		<div class="table-responsive" id="registros">
                     		<table width="100%" class="table table-striped table-bordered table-hover">
-                    			<form action="{{url('agregarmateriales')}}" method="post">
+                    			<form action="{{url('agregarmaterialescopia')}}" method="post">
                                     {{csrf_field()}}
+                                    <input type="hidden" value="{{$partida->presupuesto->id}}" name="presupuesto_id">
                     		<tbody>
                     			
                     				<input type="hidden" name="partida_id" value="{{$partida->id}}">
@@ -127,7 +143,7 @@
                     		
                     </div>
                 	</div>
-                </div> 
+                </div>
 
                  <div class="row">
                 <div class="col-lg-12">
@@ -137,18 +153,14 @@
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-<form action="{{url('actualizarmateriales')}}" method="post">
-    <input type="hidden" name="campo1" id="campo1" value="{{$partida->campo1}}">
+<form action="{{url('actualizarmaterialescopia')}}" method="post">
+     <input type="hidden" name="campo1" id="campo1" value="{{$partida->campo1}}">
     <input type="hidden" name="valor1" id="valor1" value="{{$partida->valor1}}">
     <input type="hidden" name="campo2" id="campo2" value="{{$partida->campo1}}">
     <input type="hidden" name="valor2" id="valor2" value="{{$partida->valor1}}">
     <input type="hidden" name="campo3" id="campo3" value="{{$partida->campo1}}">
     <input type="hidden" name="valor3" id="valor3" value="{{$partida->valor1}}">
-    <input type="hidden" name="presupuestopartida_id" id="presupuestopartida" value="">
-                                        <input type="hidden" value="{{$partida->id}}" name="partida_id">
-                                        <input type="hidden" id="presupuestocantidad" value="{{$partida->cantidad}}" name="presupuestocantidad">
-                                        {{csrf_field()}}
-    <input type="hidden" class="nombrepartida" name="nombre" value="{{$partida->nombre}}">
+
 <div class="row">
     <div class="col-md-6">
         <label for="">Mano de Obra</label>
@@ -183,7 +195,12 @@
                                 </thead>
                                 <tbody class="datos">
                                     
-                                       
+                                        <input type="hidden" name="presupuestopartida_id" id="presupuestopartida" value="">
+                                        <input type="hidden" value="{{$partida->id}}" name="partida_id">
+                                        <input type="hidden" id="presupuestocantidad" value="{{$partida->cantidad}}" name="presupuestocantidad">
+                                        <input type="hidden" class="nombrepartida" name="nombre" value="{{$partida->partida->nombre}}">
+                                    	{{csrf_field()}}
+                                        
                                     @foreach($partida->materiales as $material)
                                     <tr>
                                         <td>
@@ -258,8 +275,6 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
 
 <script type="text/javascript">
         
-       //cambio de valores de campos personalizados
-
        $('.campos, .valores').change(function(){
             id = $(this).attr('target-id');
             val = $(this).val();

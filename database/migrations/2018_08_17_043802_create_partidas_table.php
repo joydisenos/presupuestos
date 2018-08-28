@@ -18,7 +18,16 @@ class CreatePartidasTable extends Migration
             $table->text('nombre');
             $table->integer('mano_id')->default(0);
             $table->integer('indirecto_id')->default(0);
+            $table->float('cantidad')->default(1);
+            $table->string('campo1');
+            $table->float('valor1');
+            $table->string('campo2');
+            $table->float('valor2');
+            $table->string('campo3');
+            $table->float('valor3');
             $table->float('total')->default(0);
+            $table->float('total_materiales')->default(0);
+            $table->integer('estatus')->default(1);
             $table->timestamps();
         });
     }

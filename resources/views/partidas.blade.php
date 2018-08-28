@@ -27,7 +27,7 @@
                     
                     </div>
                 </div>
-
+ 
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="toggle">
@@ -42,7 +42,7 @@
                           <div class="form-group">
                                             <label>Mano de Obra</label>
                                             <select name="mano_id" class="form-control">
-                                                <option>Seleccione</option>
+                                                <option value="">Seleccione</option>
                                                 @foreach($manos as $mano)
                                                 <option value="{{$mano->id}}">{{$mano->nombre}}</option>
                                                 @endforeach
@@ -52,7 +52,7 @@
                           <div class="form-group">
                                             <label>Indirectos</label>
                                             <select name="indirecto_id" class="form-control">
-                                                <option>Seleccione</option>
+                                                <option value="">Seleccione</option>
                                                 @foreach($indirectos as $indirecto)
                                                 <option value="{{$indirecto->id}}">{{$indirecto->nombre}}</option>
                                                 @endforeach
@@ -82,7 +82,7 @@
                                         <th>Mano de Obra</th>
                                         <th>Indirectos</th>
                                         <th>Total</th>
-                                        <th>Ver / Editar</th>
+                                        <th>Editar / Eliminar</th>
                                         
                                     </tr>
                                 </thead>
@@ -93,17 +93,17 @@
                                     		{{$partida->nombre}}
                                     	</td>
                                     	<td>
-                                    		{{$partida->mano->nombre}}, {{$partida->mano->precio}}
+                                    		{{$partida->mano->nombre}}, {{$partida->mano->precio}}%
                                     	</td>
                                     	<td>
-                                    		{{$partida->indirecto->nombre}}, {{$partida->indirecto->precio}}
+                                    		{{$partida->indirecto->nombre}}, {{$partida->indirecto->precio}}%
                                     	</td>
                                         <td>
-                                            {{$partida->total}}
+                                            ${{$partida->total_materiales}}
                                         </td>
                                     	<td>
                                             <a href="{{url('partida').'/'.$partida->id}}" class="btn btn-warning"> <i class="fa fa-eye"></i> </a>
-                                    		<!--<a href="{{url('editar/partida').'/'.$partida->id}}" class="btn btn-primary"> <i class="fa fa-edit"></i> </a>-->
+                                    		<a href="{{url('eliminar/partida').'/'.$partida->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
                                     	</td>
                                     </tr>
                                     @endforeach

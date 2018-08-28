@@ -18,6 +18,7 @@ class CreateMaterialsTable extends Migration
             $table->string('nombre');
             $table->float('precio');
             $table->string('tipo');
+            $table->integer('estatus')->default(1);
             $table->timestamps();
         });
     }

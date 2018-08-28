@@ -15,4 +15,20 @@ class Presupuestopartida extends Model
     {
         return $this->belongsTo(Partida::class);
     }
+
+    public function materiales()
+    {
+    	return $this->hasMany(SubMaterial::class);
+    }
+
+    public function mano()
+    {
+        return $this->belongsTo(Mano::class);
+    }
+    
+    public function indirecto()
+    {
+        return $this->belongsTo(Indirecto::class);
+    }
+
 }

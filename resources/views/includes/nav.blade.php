@@ -63,7 +63,7 @@
                         </li>
 
                         <li>
-                            <a href="{{url('configuraciones')}}"><i class="fa fa-wrench fa-fw"></i> Configuraciones</a>
+                            <a href="{{url('configuraciones')}}" target="_blank"><i class="fa fa-wrench fa-fw"></i> Configuraciones</a>
                         </li>
                         
                         

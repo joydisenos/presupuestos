@@ -22,11 +22,11 @@
 
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <form action="{{url('configuraciones')}}" method="post">
                             {{csrf_field()}}
                             <div class="form-group">
-                                <label>Iva ($)</label>
+                                <label>Iva (%)</label>
                                 <input type="number" name="iva" step="0.01" class="form-control" value="{{$configuracion->iva}}">
                           </div>
 
@@ -35,7 +35,30 @@
                           </div>
                         </form>
                     </div>
-                   
+                
+                   <div class="col-md-6">
+                      <form action="{{url('unidades')}}" method="post">
+                            {{csrf_field()}}                                           <div class="col-sm-8">
+                                    <label for="">Unidad</label>
+                                    <input type="text" class="form-control" name="nombre" required>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+                                </div>
+                            
+                        </form>
+                        <table class="table table-hover">
+                            @foreach($unidades as $unidad)
+                            <tr>
+                                <td>{{$unidad->nombre}}</td>
+                                <td>
+                                  <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#unidad" data-id="{{$unidad->id}}" data-nombre="{{$unidad->nombre}}"> <i class="fa fa-edit"></i> </a>
+                                  <a href="{{url('unidad/eliminar').'/'.$unidad->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </table>
+                   </div>
                 </div>
 
                 <div class="row">
@@ -47,7 +70,7 @@
                                     <input type="text" class="form-control" name="nombre" required>
                                 </div>
                                 <div class="col-sm-4">
-                                    <label for="">Precio</label>
+                                    <label for="">Porcentaje</label>
                                     <input type="number" step="0.01" class="form-control" name="precio" required>
                                 </div>
                                 <div class="col-sm-2">
@@ -61,8 +84,11 @@
                             @foreach($manos as $mano)
                             <tr>
                                 <td>{{$mano->nombre}}</td>
-                                <td>{{$mano->precio}}</td>
-                                <td><!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#asignar" data-item="{{$mano->id}}" data-tipo="mano">Asignar</button>--></td>
+                                <td>{{$mano->precio}}%</td>
+                                <td>
+                                <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#mano" data-id="{{$mano->id}}" data-nombre="{{$mano->nombre}}" data-precio="{{$mano->precio}}"> <i class="fa fa-edit"></i> </a>
+                                  <a href="{{url('mano/eliminar').'/'.$mano->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
+                                </td>
                             </tr>
                             @endforeach
                         </table>
@@ -80,7 +106,7 @@
                                     <input type="text" class="form-control" name="nombre" required>
                                 </div>
                                 <div class="col-sm-4">
-                                    <label for="">Precio</label>
+                                    <label for="">Porcentaje</label>
                                     <input type="number" step="0.01" class="form-control" name="precio" required>
                                 </div>
 
@@ -94,8 +120,12 @@
                             @foreach($indirectos as $indirecto)
                             <tr>
                                 <td>{{$indirecto->nombre}}</td>
-                                <td>{{$indirecto->precio}}</td>
-                                <td><!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#asignar" data-item="{{$indirecto->id}}" data-tipo="indirecto">Asignar</button>--></td>
+                                <td>{{$indirecto->precio}}%</td>
+                                <td>
+                                <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#indirecto" data-id="{{$indirecto->id}}" data-nombre="{{$indirecto->nombre}}" data-precio="{{$indirecto->precio}}"> <i class="fa fa-edit"></i> </a>
+
+                                  <a href="{{url('indirecto/eliminar').'/'.$indirecto->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
+                                </td>
                             </tr>
                             @endforeach
                         </table>
@@ -109,56 +139,154 @@
     </div>
     <!-- /#wrapper -->
 
-    <div class="modal fade" id="asignar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<!-- Modales -->
+<!-- Unidades -->
+<div class="modal fade" id="unidad" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Modificar Unidad</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <form action="{{url('modificarunidad')}}" method="post">
       <div class="modal-body">
-        <form>
+        
             {{csrf_field()}}
-            <input type="hidden" id="tipo" name="tipo" value="">
+            <input type="hidden" name="unidad_id" class="unidad_id" value="">
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Recipient:</label>
-            <select name="" class="selectpicker" id="">
-                <option>Seleccione la Partida</option>
-                @foreach($partidas as $partida)
-                <option value="{{$partida->id}}">{{$partida->nombre}}</option>
-                @endforeach
-            </select>
+            <label for="recipient-name" class="col-form-label">nombre:</label>
+            <input type="text" name="nombre" class="form-control nombre" value="" required>
           </div>
           
-        </form>
+        
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send message</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
+
+<!-- Mano de Obra -->
+<div class="modal fade" id="mano" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modificar Mano de Obra</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{url('modificarmano')}}" method="post">
+      <div class="modal-body">
+        
+            {{csrf_field()}}
+            <input type="hidden" name="mano_id" class="mano_id" value="">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">nombre:</label>
+            <input type="text" name="nombre" class="form-control nombre" value="" required>
+          </div>
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Porcentaje:</label>
+            <input type="number" min="0" step="0.01" name="precio" class="form-control precio" value="" required>
+          </div>
+          
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Indirecto -->
+<div class="modal fade" id="indirecto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modificar Indirecto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{url('modificarindirecto')}}" method="post">
+      <div class="modal-body">
+        
+            {{csrf_field()}}
+            <input type="hidden" name="indirecto_id" class="indirecto_id" value="">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">nombre:</label>
+            <input type="text" name="nombre" class="form-control nombre" value="" required>
+          </div>
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Porcentaje:</label>
+            <input type="number" min="0" step="0.01" name="precio" class="form-control precio" value="" required>
+          </div>
+          
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 @endsection
 @section('scripts')
 <script>
-    $('#asignar').on('show.bs.modal', function (event) {
+    $('#unidad').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget) // Button that triggered the modal
-  var recipient = button.data('item') // Extract info from data-* attributes
-  var tipo = button.data('tipo') // Extract info from data-* attributes
+  var id = button.data('id') // Extract info from data-* attributes
+  var nombre = button.data('nombre') // Extract info from data-* attributes
   // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
   var modal = $(this)
-  modal.find('.modal-title').text('New message to ' + recipient + ' ' + tipo)
-  modal.find('.modal-body input').val(recipient)
-  modal.find('#tipo').val(tipo)
+  modal.find('.modal-title').text('Modificar unidad:' + nombre)
+  modal.find('.nombre').val(nombre)
+  modal.find('.modal-body .unidad_id').val(id)
 })
 
-     $('.selectpicker').selectpicker({
-    liveSearch: true,
-    liveSearchNormalize: true,
-});
+ $('#mano').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var id = button.data('id') // Extract info from data-* attributes
+  var nombre = button.data('nombre') // Extract info from data-* attributes
+  var precio = button.data('precio') // Extract info from data-* attributes
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this)
+  modal.find('.modal-title').text('Modificar Mano de Obra:' + nombre)
+  modal.find('.nombre').val(nombre)
+  modal.find('.precio').val(precio)
+  modal.find('.modal-body .mano_id').val(id)
+})
+
+ $('#indirecto').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var id = button.data('id') // Extract info from data-* attributes
+  var nombre = button.data('nombre') // Extract info from data-* attributes
+  var precio = button.data('precio') // Extract info from data-* attributes
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this)
+  modal.find('.modal-title').text('Modificar indirecto:' + nombre)
+  modal.find('.nombre').val(nombre)
+  modal.find('.precio').val(precio)
+  modal.find('.modal-body .indirecto_id').val(id)
+})
+
+     
 </script>
 @endsection

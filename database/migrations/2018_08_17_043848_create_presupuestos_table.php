@@ -18,6 +18,7 @@ class CreatePresupuestosTable extends Migration
             $table->string('nombre');
             $table->float('subtotal');
             $table->float('total');
+            $table->integer('estatus')->default(1);
             $table->timestamps();
         });
     }

@@ -47,9 +47,9 @@
                                             <label>Tipo</label>
                                             <select name="tipo" class="form-control">
                             <option>Seleccione la unidad</option>
-                            <option value="cu">(cu) Cada uno</option>
-                            <option value="ml">(ml) Cada metros lineales</option>
-                            <option value="sg">(sg) Suma global</option>
+                            @foreach($unidades as $unidad)
+                            <option value="{{$unidad->nombre}}">{{$unidad->nombre}}</option>
+                            @endforeach
                                             </select>
                            </div>
 
@@ -75,7 +75,7 @@
                                         <th>Nombre</th>
                                         <th>Precio</th>
                                         <th>Tipo</th>
-                                        <th>Editar</th>
+                                        <th>Editar / Eliminar</th>
                                         
                                     </tr>
                                 </thead>
@@ -86,13 +86,17 @@
                                     		{{$material->nombre}}
                                     	</td>
                                     	<td>
-                                    		{{$material->precio}}
+                                    		${{$material->precio}}
                                     	</td>
                                     	<td>
                                     		{{$material->tipo}}
                                     	</td>
                                     	<td>
-                                    		<a href="#" class="btn btn-primary"> <i class="fa fa-edit"></i> </a>
+                                    		<a type="button" class="btn btn-primary" data-toggle="modal" data-target="#editar{{$material->id}}"> <i class="fa fa-edit"></i> </a>
+
+                                            <a href="{{url('eliminar/material').'/'.$material->id}}" class="btn btn-primary">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
                                     	</td>
                                     </tr>
                                     @endforeach
@@ -115,6 +119,54 @@
 
     </div>
     <!-- /#wrapper -->
+
+    <!-- Button trigger modal -->
+
+@foreach($materiales as $material)
+<!-- Modal -->
+<div class="modal fade" id="editar{{$material->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Material</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <form action="{{url('material/editar').'/'.$material->id}}" method="post">
+        {{csrf_field()}}
+
+      <div class="modal-body">
+        <div class="form-group">
+            <label for="">Nombre</label>
+            <input type="text" name="nombre" class="form-control" value="{{$material->nombre}}">
+        </div>
+        <div class="form-group">
+            <label for="">Precio($)</label>
+            <input type="text" name="precio" step="0.01" min="0" class="form-control" value="{{$material->precio}}">
+        </div>
+       <div class="form-group">
+                                            <label>Tipo</label>
+                                            <select name="tipo" class="form-control">
+                            <option>Seleccione la unidad</option>
+                            @foreach($unidades as $unidad)
+                            <option value="{{$unidad->nombre}}">{{$unidad->nombre}}</option>
+                            @endforeach
+                                            </select>
+                           </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+        
+    </form>
+
+    </div>
+  </div>
+</div>
+@endforeach
 @endsection 
 
 @section('scripts')

@@ -10,83 +10,44 @@
                     @include('includes.error')
                     @include('includes.errors')
                     @include('includes.notificacion')
-                
-<div class="row">
-    <div class="col-md-8">
-        <h3>Partida: {{$partida->nombre}}</h3>
-    </div>
-    <div class="col-md-4">
-        <label for="">Editar nombre</label>
-       <input type="text" id="nombrepartida" value="{{$partida->nombre}}" class="form-control form-control-lg">
-    </div>
-</div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">Partida: {{$partida->nombre}}</h1>
+                    </div>
+                    <!-- /.col-lg-12 -->
 
+                    
+
+                    
+
+
+                  
+
+                </div>
+                <!-- /.row -->
 <div class="row">
     <div class="col-md-6">
-        <h3>Cantidad Global</h3>
+        <label for="">Presupuesto</label>
+        <select name="" id="" class="form-control nombrepresupuesto">
+            @foreach($presupuestopartidas as $presupuesto)
+            <option value="{{$presupuesto->id}}" attr-cantidad="{{$presupuesto->cantidad}}">{{$presupuesto->presupuesto->nombre}}</option>
+            @endforeach
+        </select>
     </div>
     <div class="col-md-3">
         <h3 class="slugpartida">&PG%</h3>
     </div>
     <div class="col-md-3">
         <label for="">Cantidad</label>
-        <input type="number" value="{{$partida->cantidad}}" min="0" step="0.01" name="cantidadglobal" id="PG" class="form-control cantidadglobal">
+        <input type="number" value="{{old('cantidadglobal')}}" min="0" step="0.01" name="cantidadglobal" id="PG" class="form-control cantidadglobal">
     </div>
 </div>
-<hr>
-
-<!-- Campos Personalizados -->
-<div class="row">
-    <div class="col-md-6">
-        <input type="text" target-id="#campo1" class="form-control campos" value="{{$partida->campo1}}">
-    </div>
-    <div class="col-md-3">
-        <h6 class="slugcampo">&C01%</h6>
-    </div>
-    <div class="col-md-3">
-
-        <input type="number" value="{{$partida->valor1}}" min="0" step="0.01" target-id="#valor1" id="C01" class="form-control valores">
-    </div>
-</div>
-<hr>
-
-<div class="row">
-    <div class="col-md-6">
-        <input type="text" target-id="#campo2" class="form-control campos" value="{{$partida->campo2}}">
-    </div>
-    <div class="col-md-3">
-        <h6 class="slugcampo">&C02%</h6>
-    </div>
-    <div class="col-md-3">
-
-        <input type="number" value="{{$partida->valor2}}" min="0" step="0.01" target-id="#valor2" id="C02" class="form-control valores">
-    </div>
-</div>
-
-<hr>
-
-<div class="row">
-    <div class="col-md-6">
-        <input type="text" target-id="#campo3" class="form-control campos" value="{{$partida->campo3}}">
-    </div>
-    <div class="col-md-3">
-        <h6 class="slugcampo">&C03%</h6>
-    </div>
-    <div class="col-md-3">
-
-        <input type="number" value="{{$partida->valor3}}" min="0" step="0.01" target-id="#valor3" id="C03" class="form-control valores">
-    </div>
-</div>
-
-<hr>
-
-<!-- Fin Campos Personalizados -->
 
 
                 <div class="row">
                 	<div class="col-lg-12">
                     	
-                    <p><strong>Total Materiales: {{$partida->total_materiales}}</strong></p>
+                    <p><strong>Total: {{$partida->total}}</strong></p>
 
                     
                     	<button class="btn btn-primary agregar"> <i class="fa fa-plus"></i> Agregar Material</button>
@@ -127,7 +88,7 @@
                     		
                     </div>
                 	</div>
-                </div> 
+                </div>
 
                  <div class="row">
                 <div class="col-lg-12">
@@ -138,17 +99,6 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
 <form action="{{url('actualizarmateriales')}}" method="post">
-    <input type="hidden" name="campo1" id="campo1" value="{{$partida->campo1}}">
-    <input type="hidden" name="valor1" id="valor1" value="{{$partida->valor1}}">
-    <input type="hidden" name="campo2" id="campo2" value="{{$partida->campo1}}">
-    <input type="hidden" name="valor2" id="valor2" value="{{$partida->valor1}}">
-    <input type="hidden" name="campo3" id="campo3" value="{{$partida->campo1}}">
-    <input type="hidden" name="valor3" id="valor3" value="{{$partida->valor1}}">
-    <input type="hidden" name="presupuestopartida_id" id="presupuestopartida" value="">
-                                        <input type="hidden" value="{{$partida->id}}" name="partida_id">
-                                        <input type="hidden" id="presupuestocantidad" value="{{$partida->cantidad}}" name="presupuestocantidad">
-                                        {{csrf_field()}}
-    <input type="hidden" class="nombrepartida" name="nombre" value="{{$partida->nombre}}">
 <div class="row">
     <div class="col-md-6">
         <label for="">Mano de Obra</label>
@@ -170,7 +120,6 @@
                             <table width="100%" class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Eliminar</th>
                                         <th>Material</th>
                                         <th>Slug</th>
                                         <th>Precio</th>
@@ -183,12 +132,12 @@
                                 </thead>
                                 <tbody class="datos">
                                     
-                                       
+                                        <input type="hidden" name="presupuestopartida_id" id="presupuestopartida" value="">
+                                        <input type="hidden" id="presupuestocantidad" value="" name="presupuestocantidad">
+                                    	{{csrf_field()}}
+                                        <input type="hidden" value="{{$partida->id}}" name="partida_id">
                                     @foreach($partida->materiales as $material)
                                     <tr>
-                                        <td>
-                                            <a href="{{url('material/eliminar').'/'.$material->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
-                                        </td>
                                     	<td>
                                     		{{$material->material->nombre}}
                                     	</td>
@@ -196,7 +145,7 @@
                                             &M{{$material->material->id}}%
                                         </td>
                                     	<td>
-                                    		${{$material->material->precio}}
+                                    		{{$material->material->precio}}
                                             <input type="hidden" name="price" class="price" value="{{$material->material->precio}}">
                                     	</td>
                                     	<td>
@@ -220,7 +169,7 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
 
                                     	</td>
                                     	<td>
-                                    		$<span id="total{{$material->id}}" class="precios">{{$material->material->precio * $material->cantidad}}</span>
+                                    		<span id="total{{$material->id}}" class="precios">{{$material->material->precio * $material->cantidad}}</span>
                                     	</td>
                                     </tr>
                                     @endforeach
@@ -258,19 +207,20 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
 
 <script type="text/javascript">
         
-       //cambio de valores de campos personalizados
+       
+        cantidadpresupuesto = $('.nombrepresupuesto option:selected').attr('attr-cantidad');
+        presupuestopartida = $('.nombrepresupuesto option:selected').val();
+            $('.cantidadglobal').val(cantidadpresupuesto)
+            $('#presupuestopartida').val(presupuestopartida);
+            $('#presupuestocantidad').val(cantidadpresupuesto);
 
-       $('.campos, .valores').change(function(){
-            id = $(this).attr('target-id');
-            val = $(this).val();
-            $(id).val(val);
-       });
-        
-        $('#nombrepartida').change(function(){
-            nombre = $(this).val();
-            $('.nombrepartida').val(nombre);
+        $('.nombrepresupuesto').change(function(){
+            cantidadpresupuesto = $('.nombrepresupuesto option:selected').attr('attr-cantidad');
+            presupuestopartida = $('.nombrepresupuesto option:selected').val();
+            $('.cantidadglobal').val(cantidadpresupuesto)
+            $('#presupuestopartida').val(presupuestopartida);
+            $('#presupuestocantidad').val(cantidadpresupuesto);
         });
-    
 
         $('.cantidadglobal').change(function(){
             cantidadpresupuesto = $(this).val();
