@@ -2,16 +2,16 @@
 
 namespace App\Exports;
 
-use App\Partida;
+use App\Unidad;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
-class PartidasExport implements FromCollection
+class UnidadExport implements FromCollection
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return Partida::where('estatus',1)->get();
+        return Unidad::all();
     }
 }

@@ -2,16 +2,16 @@
 
 namespace App\Exports;
 
-use App\Partida;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use App\Indirecto;
 
-class PartidasExport implements FromCollection
+class IndirectoExport implements FromCollection
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return Partida::where('estatus',1)->get();
+        return Indirecto::all();
     }
 }

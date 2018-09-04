@@ -1,0 +1,22 @@
+<table>
+	@foreach($partidas as $partida)
+	<tr>
+		<td>{{$partida->nombre}}</td>
+		<td>{{$partida->mano->nombre}}</td>
+		<td>{{$partida->indirecto->nombre}}</td>
+		<td>{{$partida->campo1}}</td>
+		<td>{{$partida->valor1}}</td>
+		<td>{{$partida->campo2}}</td>
+		<td>{{$partida->valor2}}</td>
+		<td>{{$partida->campo3}}</td>
+		<td>{{$partida->valor3}}</td>
+		<td>{{$partida->campo4}}</td>
+		<td>{{$partida->valor4}}</td>
+		<td>{{$partida->campo5}}</td>
+		<td>{{$partida->valor5}}</td>
+		<td>{{$partida->cantidad}}</td>
+		<td>{{$partida->total_materiales}}</td>
+		<td>{{$partida->estatus}}</td>
+	</tr>
+	@endforeach
+</table>

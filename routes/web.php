@@ -22,6 +22,8 @@ Route::get('/', function () {
 	}
 });
 
+
+
 Auth::routes();
 
 // Auth
@@ -35,6 +37,8 @@ Route::get('eliminar/partida/{id}', 'GlobalController@eliminarpartida');
 	//PartidaMateriales
 Route::get('/material/eliminar/{id}','GlobalController@eliminarpresupuestomaterial');
 Route::get('/partidapresupuesto/{id}','GlobalController@partidapresupuestoactualizar');
+Route::post('/agregarotros','GlobalController@agregarotros');
+Route::post('/agregarotroscopia','GlobalController@agregarotroscopia');
 	//Materiales
 Route::get('/materiales', 'GlobalController@materiales');
 Route::post('/materiales', 'GlobalController@storemateriales');
@@ -71,5 +75,10 @@ Route::get('eliminar/partidapresupuesto/{id}', 'GlobalController@eliminarpartida
 	//Modificar
 Route::post('modificarmano', 'GlobalController@modificarmano');
 Route::post('modificarindirecto', 'GlobalController@modificarindirecto');
-
+	//Exportar
+Route::get('exportarpartidas','GlobalController@exportarpartidas');
+Route::get('exportardata','GlobalController@exportardata');
+	//Importar
+Route::get('importardata','GlobalController@importardata');
+Route::post('importarpartidas','GlobalController@importarpartidas');
 

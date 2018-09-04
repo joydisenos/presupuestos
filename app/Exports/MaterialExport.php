@@ -2,16 +2,17 @@
 
 namespace App\Exports;
 
-use App\Partida;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use App\Material;
 
-class PartidasExport implements FromCollection
+class MaterialExport implements FromCollection, ShouldAutoSize
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return Partida::where('estatus',1)->get();
+        return Material::all();
     }
 }

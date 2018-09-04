@@ -47,23 +47,31 @@
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Presupuestos<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{{url('presupuesto/nuevo')}}"> <i class="fa fa-plus"></i> Nuevo</a>
+                                    <a href="{{url('presupuesto/nuevo')}}"> <i class="fa fa-plus fa-fw"></i> Nuevo</a>
                                 </li>
                                 <li>
-                                    <a href="{{url('historial')}}">Historial</a>
+                                    <a href="{{url('historial')}}"><i class="fa fa-history fa-fw"></i> Historial</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="{{url('partidas')}}"><i class="fa fa-table fa-fw"></i> Partidas</a>
+                            <a href="{{url('partidas')}}"><i class="fa fa-tasks fa-fw"></i> Partidas</a>
                         </li>
                         <li>
-                            <a href="{{url('materiales')}}"><i class="fa fa-table fa-fw"></i> Materiales</a>
+                            <a href="{{url('materiales')}}"><i class="fa fa-cubes fa-fw"></i> Materiales</a>
                         </li>
 
                         <li>
                             <a href="{{url('configuraciones')}}" target="_blank"><i class="fa fa-wrench fa-fw"></i> Configuraciones</a>
+                        </li>
+
+                        <li>
+                            <a href="{{url('exportardata')}}"><i class="fa fa-file-excel-o fa-fw"></i> Exportar datos</a>
+                        </li>
+
+                        <li>
+                            <a href="{{url('importardata')}}"><i class="fa fa-upload fa-fw"></i> Importar datos</a>
                         </li>
                         
                         
