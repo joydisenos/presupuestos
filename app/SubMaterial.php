@@ -15,4 +15,9 @@ class SubMaterial extends Model
     {
         return $this->belongsTo(Presupuestopartida::class);
     }
+
+    public function grupo()
+    {
+        return $this->belongsTo(Grupo::class);
+    }
 }

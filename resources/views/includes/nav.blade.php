@@ -59,9 +59,17 @@
                             <a href="{{url('partidas')}}"><i class="fa fa-tasks fa-fw"></i> Partidas</a>
                         </li>
                         <li>
-                            <a href="{{url('materiales')}}"><i class="fa fa-cubes fa-fw"></i> Materiales</a>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Materiales<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{{url('materiales')}}"><i class="fa fa-cubes fa-fw"></i> Materiales</a>
+                                </li>
+                                <li>
+                                    <a href="{{url('grupos')}}"><i class="fa fa-object-group fa-fw"></i> Grupos</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
                         </li>
-
                         <li>
                             <a href="{{url('configuraciones')}}" target="_blank"><i class="fa fa-wrench fa-fw"></i> Configuraciones</a>
                         </li>

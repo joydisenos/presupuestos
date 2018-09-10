@@ -20,4 +20,9 @@ class PresupuestoMaterial extends Model
     {
         return $this->belongsTo(Material::class);
     }
+
+    public function grupo()
+    {
+        return $this->belongsTo(Grupo::class);
+    }
 }

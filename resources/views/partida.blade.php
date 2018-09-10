@@ -125,6 +125,14 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#otros">
                         Otros
                         </button>
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#grupos">
+                        Grupos
+                        </button>
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#notas">
+                        Notas
+                        </button>
                     
                     </div>
                 </div>
@@ -188,6 +196,25 @@
                                         <input type="hidden" id="presupuestocantidad" value="{{$partida->cantidad}}" name="presupuestocantidad">
                                         {{csrf_field()}}
     <input type="hidden" class="nombrepartida" name="nombre" value="{{$partida->nombre}}">
+    @if($partida->notas != null)
+    {!!$partida->notas!!}
+    @endif
+
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <label for="">Seleccionar Color</label>
+            <input type="color" name="color"
+    @if($partida->color != null)
+    value="{{$partida->color}}"
+    @else
+    value="#ffffff"
+    @endif
+>
+        </div>
+    </div>
+
+
 <div class="row">
     <div class="col-md-6">
         <label for="">Mano de Obra</label>
@@ -211,6 +238,7 @@
                                     <tr>
                                         <th>Eliminar</th>
                                         <th>Material</th>
+                                        <th>Grupo</th>
                                         <th>Slug</th>
                                         <th>Precio</th>
                                         <th>Tipo</th>
@@ -232,7 +260,12 @@
                                     		{{$material->material->nombre}}
                                     	</td>
                                         <td>
-                                            &M{{$material->material->id}}%
+                                            @if($material->grupo_id != null)
+                                            {{$material->grupo->nombre}}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            &M{{$material->grupo_id}}{{$material->material->id}}%
                                         </td>
                                     	<td>
                                     		${{$material->material->precio}}
@@ -242,12 +275,13 @@
                                     		{{$material->material->tipo}}
                                     	</td>
                                       
-                                        <td><input type="text" placeholder="=&slug% * n" name="formula[]" class="form-control operaciones" value="{{$material->formula}}">
+                                        <td>
+        <input type="text" placeholder="=&slug% * n" name="formula[]" class="form-control operaciones" value="{{$material->formula}}">
 <input type="hidden" class="formulas" value="
 <?php 
 $material->formula = str_replace('=', 'mat = ', $material->formula);
 $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
-            $material->formula = str_replace('%',"').val())",$material->formula);
+$material->formula = str_replace('%',"').val())",$material->formula);
             echo $material->formula;
 
  ?>
@@ -255,7 +289,7 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
                                         </td>
                                     	<td>
                                     		<input type="hidden" name="material_id[]" value="{{$material->id}}">
-                                            <input type="number" min="0" step="0.01" name="cantidad[]" class="form-control cantidades" id="M{{$material->material->id}}" value="{{$material->cantidad}}" slug="M{{$material->material->id}}" required>
+                                            <input type="number" min="0" step="0.01" name="cantidad[]" class="form-control cantidades" id="M{{$material->grupo_id}}{{$material->material->id}}" value="{{$material->cantidad}}" slug="M{{$material->grupo_id}}{{$material->material->id}}" required>
 
                                     	</td>
                                     	<td>
@@ -335,13 +369,106 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="grupos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Grupos</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+       <div class="modal-body">
+
+      <form action="{{url('agregargrupo')}}" method="post">
+        {{csrf_field()}}
+        <input type="hidden" name="partida_id" value="{{$partida->id}}">
+       
+       <div class="table-responsive">
+           <table class="table table-hover">
+               <thead>
+                   <th width="10px">Selecciconar</th>
+                   <th>Nombre</th>
+               </thead>
+               @foreach($grupos as $grupo)
+               <tr>
+                   <td align="right">
+                       <input type="checkbox" value="{{$grupo->id}}" name="grupos[]">
+                   </td>
+                   <td>
+                       {{$grupo->nombre}}
+                   </td>
+               </tr>
+               @endforeach
+           </table>
+       </div>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Agregar</button>
+        
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="notas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Crear/Editar notas</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+       <div class="modal-body">
+
+      <form action="{{url('agregarnotaspartida')}}" method="post">
+        {{csrf_field()}}
+        <input type="hidden" name="partida_id" value="{{$partida->id}}">
+       
+       <textarea name="notas" id="" class="notas" cols="30" rows="10">{!!$partida->notas!!}</textarea>
+      
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Agregar</button>
+        
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
 @endsection 
 
 @section('scripts')
 
+<script type="text/javascript" src="{{asset('vendor/tinymce/tinymce.min.js')}}"></script>
+
 @include('includes.tablasscript')
 
 <script type="text/javascript">
+
+        tinymce.init({
+          selector: '.notas',
+          height: 500,
+          menubar: false,
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor textcolor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table contextmenu paste code help wordcount'
+          ],
+          toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+        });
         
        //cambio de valores de campos personalizados
 

@@ -15,4 +15,9 @@ class Partidamaterial extends Model
     {
         return $this->belongsTo(Partida::class);
     }
+
+    public function grupo()
+    {
+        return $this->belongsTo(Grupo::class);
+    }
 }

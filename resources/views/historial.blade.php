@@ -47,12 +47,17 @@
                                         <th>Total</th>
                                         <th>Editar / Eliminar</th>
                                         <th>Exportar</th>
+                                        <th>Marcar</th>
                                         
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($presupuestos as $presupuesto)
-                                    <tr>
+                                    <tr
+                                    @if($presupuesto->color != null)
+                                    style="background-color:{{$presupuesto->color}}"
+                                    @endif
+                                    >
                                     	<td>
                                     		{{$presupuesto->id}}
                                     	</td>
@@ -77,6 +82,20 @@
                                             <a href="{{url('exportar/materiales').'/'.$presupuesto->id}}" class="btn btn-success">
                                              Desglose unitario
                                             </a>
+                                        </td>
+                                        <td>
+                                            <form action="{{url('colorpresupuesto')}}" method="post">
+                                                {{csrf_field()}}
+                                                <input type="hidden" name="presupuesto_id" value="{{$presupuesto->id}}">
+                                                <input type="color" name="color"
+@if($presupuesto->color != null)
+value="{{$presupuesto->color}}"
+@else
+value="#ffffff"
+@endif
+                                                >
+                                                <button type="submit" class="btn btn-primary"> <i class="fa fa-save"></i></button>
+                                            </form>
                                         </td>
                                     </tr>
                                     @endforeach

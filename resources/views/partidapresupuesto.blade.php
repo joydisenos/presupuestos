@@ -140,6 +140,14 @@
                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#otros">
                         Otros
                         </button>
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#grupos">
+                        Grupos
+                        </button>
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#notas">
+                        Notas
+                        </button>
                     
                     </div>
                 </div>
@@ -199,6 +207,23 @@
     <input type="hidden" name="valor4" id="valor4" value="{{$partida->valor4}}">
     <input type="hidden" name="campo5" id="campo5" value="{{$partida->campo5}}">
     <input type="hidden" name="valor5" id="valor5" value="{{$partida->valor5}}">
+ @if($partida->notas != null)
+    {!!$partida->notas!!}
+    @endif
+
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <label for="">Seleccionar Color</label>
+            <input type="color" name="color"
+    @if($partida->color != null)
+    value="{{$partida->color}}"
+    @else
+    value="#ffffff"
+    @endif
+>
+        </div>
+    </div>
 
 <div class="row">
     <div class="col-md-6">
@@ -355,14 +380,105 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="grupos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Grupos</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+       <div class="modal-body">
+
+      <form action="{{url('agregargrupocopia')}}" method="post">
+        {{csrf_field()}}
+        <input type="hidden" name="presupuestopartida_id" value="{{$partida->id}}">
+        <input type="hidden" name="presupuesto_id" value="{{$partida->presupuesto->id}}">
+       
+       <div class="table-responsive">
+           <table class="table table-hover">
+               <thead>
+                   <th width="10px">Selecciconar</th>
+                   <th>Nombre</th>
+               </thead>
+               @foreach($grupos as $grupo)
+               <tr>
+                   <td align="right">
+                       <input type="checkbox" value="{{$grupo->id}}" name="grupos[]">
+                   </td>
+                   <td>
+                       {{$grupo->nombre}}
+                   </td>
+               </tr>
+               @endforeach
+           </table>
+       </div>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Agregar</button>
+        
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="notas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Crear/Editar notas</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+       <div class="modal-body">
+
+      <form action="{{url('agregarnotaspartidapresupuesto')}}" method="post">
+        {{csrf_field()}}
+        <input type="hidden" name="partida_id" value="{{$partida->id}}">
+       
+       <textarea name="notas" id="" class="notas" cols="30" rows="10">{!!$partida->notas!!}</textarea>
+      
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Agregar</button>
+        
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
 
 @endsection 
 
 @section('scripts')
 
+<script type="text/javascript" src="{{asset('vendor/tinymce/tinymce.min.js')}}"></script>
+
 @include('includes.tablasscript')
 
 <script type="text/javascript">
+
+    tinymce.init({
+          selector: '.notas',
+          height: 500,
+          menubar: false,
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor textcolor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table contextmenu paste code help wordcount'
+          ],
+          toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+        });
         
        $('.campos, .valores').change(function(){
             id = $(this).attr('target-id');

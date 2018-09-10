@@ -41,7 +41,14 @@
                         </div>
                     </div>
                 </div>
-                
+
+@if($presupuesto->notas != null)
+                <div class="row">
+                    <div class="col-md-12">
+                        {!!$presupuesto->notas!!}
+                    </div>
+                </div>
+@endif
 
                  <div class="row">
                 <div class="col-lg-12">
@@ -54,7 +61,26 @@
                             <input type="hidden" value="{{$presupuesto->id}}" name="presupuesto_id">
                             <input type="hidden" id="iva" value="{{$configuraciones->iva}}" name="iva">
                             <input type="hidden" id="nombrepresupuesto" value="{{$presupuesto->nombre}}" name="nombre">
+<div class="row">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#notas">
+                        Notas
+                        </button>
+        </div>
+        <div class="col-md-6">
+            <label for="">Seleccionar color</label>
+            <input type="color" name="color"
+    @if($partida->color != null)
+    value="{{$partida->color}}"
+    @else
+    value="#ffffff"
+    @endif
+>
+        </div>
+    </div>
+
 <div class="table-responsive">
+
                             <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
                                 <thead>
                                     <tr>
@@ -75,7 +101,11 @@
 
                                 <tbody>
                                     @foreach($presupuesto->partidas  as $numero => $partida)
-                                    <tr>
+                                    <tr
+                                    @if($partida->color != null)
+                                    style="background-color:{{$partida->color}}"
+                                    @endif
+                                    >
                                         <td>
                                             <a href="{{url('eliminar/partidapresupuesto').'/'.$partida->id}}" class="btn btn-primary btn-xs"> <i class="fa fa-trash"></i> </a>
                                         </td>
@@ -361,12 +391,57 @@ $<span class="precios">{{
 </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="notas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Crear/Editar notas</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+       <div class="modal-body">
+
+      <form action="{{url('agregarnotaspresupuesto')}}" method="post">
+        {{csrf_field()}}
+        <input type="hidden" name="presupuesto_id" value="{{$presupuesto->id}}">
+       
+       <textarea name="notas" id="" class="notas" cols="30" rows="10">{!!$presupuesto->notas!!}</textarea>
+      
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Agregar</button>
+        
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+
 @endsection 
 
 @section('scripts')
 
+<script type="text/javascript" src="{{asset('vendor/tinymce/tinymce.min.js')}}"></script>
+
 @include('includes.tablasscript')
 <script>
+    tinymce.init({
+          selector: '.notas',
+          height: 500,
+          menubar: false,
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor textcolor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table contextmenu paste code help wordcount'
+          ],
+          toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+        });
     //variables globales
     sumaMateriales = 0;
     sumaMano = 0;

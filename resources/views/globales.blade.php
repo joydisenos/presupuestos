@@ -157,7 +157,7 @@
             {{csrf_field()}}
             <input type="hidden" name="unidad_id" class="unidad_id" value="">
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">nombre:</label>
+            <label for="recipient-name" class="col-form-label">Nombre:</label>
             <input type="text" name="nombre" class="form-control nombre" value="" required>
           </div>
           
@@ -188,7 +188,7 @@
             {{csrf_field()}}
             <input type="hidden" name="mano_id" class="mano_id" value="">
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">nombre:</label>
+            <label for="recipient-name" class="col-form-label">Nombre:</label>
             <input type="text" name="nombre" class="form-control nombre" value="" required>
           </div>
 
@@ -224,7 +224,7 @@
             {{csrf_field()}}
             <input type="hidden" name="indirecto_id" class="indirecto_id" value="">
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">nombre:</label>
+            <label for="recipient-name" class="col-form-label">Nombre:</label>
             <input type="text" name="nombre" class="form-control nombre" value="" required>
           </div>
 

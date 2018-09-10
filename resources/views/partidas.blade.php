@@ -89,12 +89,17 @@
                                         <th>Indirectos</th>
                                         <th>Total</th>
                                         <th>Editar / Eliminar</th>
+                                        <th>Marcar</th>
                                         
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($partidas as $partida)
-                                    <tr>
+                                    <tr
+                                    @if($partida->color != null)
+                                    style="background-color:{{$partida->color}}"
+                                    @endif
+                                    >
                                     	<td>
                                     		{{$partida->nombre}}
                                     	</td>
@@ -110,7 +115,22 @@
                                     	<td>
                                             <a href="{{url('partida').'/'.$partida->id}}" class="btn btn-warning"> <i class="fa fa-eye"></i> </a>
                                     		<a href="{{url('eliminar/partida').'/'.$partida->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
+
                                     	</td>
+                                        <td>
+                                            <form action="{{url('colorpartida')}}" method="post">
+                                                {{csrf_field()}}
+                                                <input type="hidden" name="partida_id" value="{{$partida->id}}">
+<input type="color" name="color"
+    @if($partida->color != null)
+    value="{{$partida->color}}"
+    @else
+    value="#ffffff"
+    @endif
+>
+                                                <button type="submit" class="btn btn-primary"> <i class="fa fa-save"></i></button>
+                                            </form>
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

@@ -14,6 +14,8 @@ use App\Material;
 use App\Unidad;
 use App\SubMaterial;
 use App\Presupuesto;
+use App\Grupo;
+use App\GrupoMaterial;
 use App\Exports\PartidasExport;
 use App\Exports\MaterialesExport;
 use App\Exports\PresupuestoExport;
@@ -67,11 +69,12 @@ class GlobalController extends Controller
         $partida             = Partida::findOrFail($id);
         $materiales          = Material::where('estatus','=',1)->get();
         $presupuestopartidas = Presupuestopartida::where('partida_id','=',$id)->get();
+        $grupos              = Grupo::where('estatus',1)->get();
         $manos               = Mano::where('estatus','=',1)->get();
         $indirectos          = Indirecto::where('estatus','=',1)->get();
         $unidades            = Unidad::where('estatus','=',1)->get();
 
-        return view('partida',compact('partida','materiales','presupuestopartidas','manos','indirectos','unidades'));
+        return view('partida',compact('partida','materiales','presupuestopartidas','manos','indirectos','unidades','grupos'));
     }
 
     public function eliminarpartida($id)
@@ -282,6 +285,7 @@ class GlobalController extends Controller
         $partida->nombre           = $request->nombre;
         $partida->mano_id          = $request->mano_id;
         $partida->indirecto_id     = $request->indirecto_id;
+        $partida->color            = $request->color;
         //$mano                    = $acumular * (((float)$partida->mano->precio)/100);
         //$indirecto               = $acumular * (((float)$partida->indirecto->precio)/100);
         // $partida->total         = $acumular + $mano + $indirecto;
@@ -349,6 +353,7 @@ class GlobalController extends Controller
         $partida->valor5           = $request->valor5;
         $partida->mano_id          = $request->mano_id;
         $partida->indirecto_id     = $request->indirecto_id;
+        $partida->color            = $request->color;
         //$mano                    = $acumular * (((float)$partida->mano->precio)/100);
         //$indirecto               = $acumular * (((float)$partida->indirecto->precio)/100);
         $partida->total_materiales = $acumular;
@@ -382,7 +387,7 @@ class GlobalController extends Controller
 
     public function eliminarpresupuestomaterial($id)
     {
-        $material = Partidamaterial::findOrFail($id);
+        $material = SubMaterial::findOrFail($id);
         $material->delete();
 
         return redirect()->back()->with('status','Material Eliminado');
@@ -495,6 +500,7 @@ class GlobalController extends Controller
         $presupuesto->subtotal = $request->subtotal;
         $presupuesto->total    = $request->total;
         $presupuesto->nombre   = $request->nombre;
+        $presupuesto->color    = $request->color;
         $presupuesto->save();
 
         return redirect()->back()->with('status','Cambios registrados con éxito');
@@ -509,8 +515,9 @@ class GlobalController extends Controller
         $manos               = Mano::where('estatus','=',1)->get();
         $indirectos          = Indirecto::where('estatus','=',1)->get();
         $unidades            = Unidad::where('estatus','=',1)->get();
+        $grupos              = Grupo::where('estatus','=',1)->get();
 
-        return view('partidapresupuesto',compact('partida','materiales','presupuestopartidas','manos','indirectos','unidades'));
+        return view('partidapresupuesto',compact('partida','materiales','presupuestopartidas','manos','indirectos','unidades','grupos'));
     }
 
     public function exportarpresupuesto($id)
@@ -1084,6 +1091,247 @@ class GlobalController extends Controller
         $materialNew->save();
 
         return redirect()->back()->with('status','Adicional guardado correctamente');
+    }
+
+    public function grupos()
+    {
+
+        $materiales = Material::where('estatus',1)->get();
+        $grupos = Grupo::where('estatus',1)->get();
+
+        return view('grupos',compact('materiales','grupos'));
+    }
+
+    public function storegrupo(Request $request)
+    {
+        $validatedData = $request->validate([
+                'nombre' => 'required|string|min:3|unique:grupos',
+                'materiales' => 'required',
+            ]);
+
+        $grupo         = new Grupo();
+        $grupo->nombre = $request->nombre;
+        $grupo->save();
+
+        $materiales = $request->input('materiales');
+
+        foreach($materiales as $material)
+        {
+            $grupomaterial              = new GrupoMaterial();
+            $grupomaterial->material_id = (int) $material;
+            $grupomaterial->grupo_id    = (int) $grupo->id;
+            $grupomaterial->formula    = '';
+            $grupomaterial->save();
+        }
+
+        return redirect()->back()->with('status','Grupo guardado correctamente');
+    }
+
+    public function eliminargrupomaterial($id)
+    {
+        $material = GrupoMaterial::findOrFail($id);
+        $material->delete();
+
+        return redirect()->back()->with('status','Material excluido del grupo');
+    }
+
+    public function agregargrupo(Request $request)
+    {
+        $validatedData = $request->validate([
+                'grupos' => 'required',
+            ]);
+
+        $grupos = $request->input('grupos');
+
+        foreach ($grupos as $grupo) {
+            $grupoPri = Grupo::findOrFail($grupo);
+            foreach($grupoPri->materiales as $material)
+            {
+                $buscar = Partidamaterial::
+                            where('partida_id',$request->partida_id)
+                            ->where('material_id', $material->material->id)
+                            ->where('grupo', $grupoPri->id)
+                            ->first();
+                if ($buscar == null )
+                {
+                    $materialNuevo              = new Partidamaterial();
+                    $materialNuevo->partida_id  = (int) $request->partida_id;
+                    $materialNuevo->material_id = $material->material->id;
+                    $materialNuevo->grupo_id    = $grupoPri->id;
+                    if($material->formula == null){
+                        $materialNuevo->formula     = '';
+                    }else{
+                        $materialNuevo->formula     = $material->formula;
+                    }
+                    $materialNuevo->cantidad    = $material->cantidad;
+                    $materialNuevo->save();
+                }
+            }
+        }
+
+        return redirect()->back()->with('status','Grupo de Materiales Agregados');
+    }
+
+    public function agregargrupocopia(Request $request)
+    {
+        $validatedData = $request->validate([
+                'grupos' => 'required',
+            ]);
+
+        $grupos = $request->input('grupos');
+
+        foreach ($grupos as $grupo) {
+            $grupoPri = Grupo::findOrFail($grupo);
+            foreach($grupoPri->materiales as $material)
+            {
+                $buscar = SubMaterial::
+                            where('presupuestopartida_id',$request->presupuestopartida_id)
+                            ->where('material_id', $material->material->id)
+                            ->first();
+                if ($buscar == null )
+                {
+                    $materialNuevo              = new SubMaterial();
+                    $materialNuevo->presupuestopartida_id  = (int) $request->presupuestopartida_id;
+                    $materialNuevo->material_id = $material->material->id;
+                    $materialNuevo->presupuesto_id = $request->presupuesto_id;
+                    $materialNuevo->formula     = $material->formula;
+                    $materialNuevo->cantidad    = $material->cantidad;
+                    $materialNuevo->save();
+                }
+            }
+        }
+
+        return redirect()->back()->with('status','Grupo de Materiales Agregados');
+    }
+
+    public function colorpartida(Request $request)
+    {
+        $partida = Partida::findOrFail($request->partida_id);
+        $partida->color = $request->color;
+        $partida->save();
+
+        return redirect()->back()->with('status','Partida Marcada');
+    }
+
+    public function colorpresupuesto(Request $request)
+    {
+        $presupuesto = Presupuesto::findOrFail($request->presupuesto_id);
+        $presupuesto->color = $request->color;
+        $presupuesto->save();
+
+        return redirect()->back()->with('status','Presupuesto Marcado');
+    }
+
+    public function modificargrupo(Request $request)
+    {
+        $validatedData = $request->validate([
+                'nombre' => 'required|string|min:3',
+            ]);
+        $grupo = Grupo::findOrFail($request->grupo_id);
+        $grupo->nombre = $request->nombre;
+        $grupo->save();
+
+        return redirect()->back()->with('status','Grupo modificado correctamente');
+
+    }
+
+    public function eliminargrupo($id)
+    {
+        $grupo = Grupo::findOrFail($id);
+        $grupo->estatus = 0;
+        $grupo->save();
+
+        return redirect()->back()->with('status','Grupo eliminado');
+    }
+
+    public function agregarmaterialesgrupo(Request $request)
+    {
+        $validatedData = $request->validate([
+                'materiales' => 'required',
+            ]);
+
+        $materiales = $request->input('materiales');
+
+        
+
+        foreach ($materiales as $material)
+        {
+            $buscar = GrupoMaterial::where('material_id' , $material)
+                                    ->first();
+            if($buscar != null)
+            {
+                $grupomaterial              = new GrupoMaterial();
+                $grupomaterial->material_id = (int) $material;
+                $grupomaterial->grupo_id    = (int) $request->grupo_id;
+                $grupomaterial->formula    = '';
+                $grupomaterial->save();
+            }
+        }
+
+        return redirect()->back()->with('status','Materiales agregados');
+    }
+
+    public function guardarmaterialesgrupo(Request $request)
+    {
+        
+        $materialesId = $request->input('material_id');
+        $formulas = $request->input('formula');
+        $cantidades = $request->input('cantidad');
+        $arreglo1 = array_combine($materialesId , $formulas);
+        $arreglo2 = array_combine($materialesId, $cantidades);
+
+        foreach ($arreglo1 as $id => $formula) {
+            $material = GrupoMaterial::findOrFail($id);
+            $material->formula = $formula;
+            $material->save();
+        }
+
+        foreach ($arreglo2 as $id => $cantidad) {
+            $material = GrupoMaterial::findOrFail($id);
+            $material->cantidad = $cantidad;
+            $material->save();
+        }
+        
+        return redirect()->back()->with('status','Materiales actualizados');
+    }
+
+    public function agregarnotaspartida(Request $request)
+    {
+        $validatedData = $request->validate([
+                'notas' => 'required',
+            ]);
+
+        $partida = Partida::findOrFail($request->partida_id);
+        $partida->notas = $request->notas;
+        $partida->save();
+
+        return redirect()->back()->with('status','Nota agregada');
+    }
+
+    public function agregarnotaspresupuesto(Request $request)
+    {
+        $validatedData = $request->validate([
+                'notas' => 'required',
+            ]);
+
+        $presupuesto = Presupuesto::findOrFail($request->presupuesto_id);
+        $presupuesto->notas = $request->notas;
+        $presupuesto->save();
+
+        return redirect()->back()->with('status','Nota agregada');
+    }
+
+    public function agregarnotaspartidapresupuesto(Request $request)
+    {
+        $validatedData = $request->validate([
+                'notas' => 'required',
+            ]);
+
+        $partida = Presupuestopartida::findOrFail($request->partida_id);
+        $partida->notas = $request->notas;
+        $partida->save();
+
+        return redirect()->back()->with('status','Nota agregada');
     }
 
 }
