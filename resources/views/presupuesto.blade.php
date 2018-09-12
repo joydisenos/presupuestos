@@ -114,7 +114,7 @@
                                             <input type="text" class="form-control" value="{{$partida->numero}}" name="numeros[]" required>
                                         </td>
                                         <td>
-                                            {{$partida->partida->nombre}}
+                                            <input type="text" class="form-control" value="{{$partida->nombre}}" name="nombres[]">
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#materiales{{$numero}}{{$partida->partida->id}}">

@@ -248,6 +248,7 @@
                                     <tr>
                                         <th>Eliminar</th>
                                         <th>Material</th>
+                                        <th>Grupo</th>
                                         <th>Slug</th>
                                         <th>Precio</th>
                                         <th>Tipo</th>
@@ -266,7 +267,13 @@
                                     	{{csrf_field()}}
                                         
                                     @foreach($partida->materiales as $material)
-                                    <tr>
+                                    <tr
+                                     @if($material->grupo_id != null)
+                                     class="registros {{str_slug($material->grupo->nombre)}}"
+                                     @else
+                                     class="registros"
+                                     @endif
+                                     >
                                         <td>
                                             <a href="{{url('material/eliminar').'/'.$material->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
                                         </td>
@@ -274,7 +281,13 @@
                                     		{{$material->material->nombre}}
                                     	</td>
                                         <td>
-                                            &M{{$material->material->id}}%
+                                            @if($material->grupo_id != null)
+                                            {{$material->grupo->nombre}}
+                                            <input type="hidden" name="gruponombre[]" value="{{str_slug($material->grupo->nombre)}}" class="nombregrupo">
+                                            @endif
+                                        </td>
+                                        <td>
+                                            &M{{$material->grupo_id}}{{$material->material->id}}%
                                         </td>
                                     	<td>
                                     		${{$material->material->precio}}
@@ -297,7 +310,7 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
                                         </td>
                                     	<td>
                                     		<input type="hidden" name="material_id[]" value="{{$material->id}}">
-                                            <input type="number" min="0" step="0.01" name="cantidad[]" class="form-control cantidades" id="M{{$material->material->id}}" value="{{$material->cantidad}}" slug="M{{$material->material->id}}" required>
+                                            <input type="number" min="0" step="0.01" name="cantidad[]" class="form-control cantidades" id="M{{$material->grupo_id}}{{$material->material->id}}" value="{{$material->cantidad}}" slug="M{{$material->grupo_id}}{{$material->material->id}}" required>
 
                                     	</td>
                                     	<td>
@@ -399,11 +412,13 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
         <input type="hidden" name="presupuesto_id" value="{{$partida->presupuesto->id}}">
        
        <div class="table-responsive">
+        <input type="text" class="form-control" id="buscargrupo">
            <table class="table table-hover">
                <thead>
                    <th width="10px">Selecciconar</th>
                    <th>Nombre</th>
                </thead>
+               <tbody class="registrosgrupos">
                @foreach($grupos as $grupo)
                <tr>
                    <td align="right">
@@ -414,6 +429,7 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
                    </td>
                </tr>
                @endforeach
+           </tbody>
            </table>
        </div>
       
@@ -479,7 +495,30 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
           ],
           toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
         });
+        //Expandir grupos
+        //
+        nombreGrupo = 0;
         
+        $('.nombregrupo').each(function(){
+            
+            nombreNuevo = $(this).val();
+
+            if (nombreGrupo != nombreNuevo){
+                nombreGrupo = $(this).val();
+                $(this).parents('tr').before("<tr><td colspan='9'><a class='btn btn-primary ocultar' toggle='."+nombreGrupo+"' style='margin-left:40px;'> <i class='fa fa-eye'></i> </a> Grupo "+ nombreGrupo +"</td></tr>");
+            }
+
+
+        });
+
+        $('.ocultar').click(function(){
+            event.preventDefault();
+            clase = $(this).attr('toggle');
+                $(clase).toggle();
+            //alert(clase);
+        });
+
+
        $('.campos, .valores').change(function(){
             id = $(this).attr('target-id');
             val = $(this).val();
@@ -497,9 +536,9 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
             $('#presupuestocantidad').val(cantidadpresupuesto);
         })
 
-        $('input,.nombrepresupuesto').change(function(){
+        $('input').change(function(){
 
-            $('.datos tr').each(function(){
+            $('.registros').each(function(){
 
 
             //buscar formulas
@@ -537,10 +576,21 @@ $material->formula = str_replace('&',"parseFloat($('#", $material->formula);
         });
 
         $(document).ready(function () {
+
+
         $('#filtro').keyup(function () {
       var rex = new RegExp($(this).val(), 'i');
         $('#registros tr').hide();
         $('#registros tr').filter(function () {
+            return rex.test($(this).text());
+        }).show();
+
+        })
+
+         $('#buscargrupo').keyup(function () {
+      var rex = new RegExp($(this).val(), 'i');
+        $('.registrosgrupos tr').hide();
+        $('.registrosgrupos tr').filter(function () {
             return rex.test($(this).text());
         }).show();
 

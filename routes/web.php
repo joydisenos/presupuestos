@@ -38,6 +38,7 @@ Route::post('colorpartida', 'GlobalController@colorpartida');
 Route::post('agregarnotaspartida', 'GlobalController@agregarnotaspartida');
 	//PartidaMateriales
 Route::get('/material/eliminar/{id}','GlobalController@eliminarpresupuestomaterial');
+Route::get('/partidamaterial/eliminar/{id}','GlobalController@eliminarpartidamaterial');
 Route::get('/partidapresupuesto/{id}','GlobalController@partidapresupuestoactualizar');
 Route::post('/agregarotros','GlobalController@agregarotros');
 Route::post('/agregarotroscopia','GlobalController@agregarotroscopia');

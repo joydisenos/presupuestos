@@ -251,10 +251,16 @@
                                 <tbody class="datos">
                                     
                                        
-                                    @foreach($partida->materiales as $material)
-                                    <tr>
+                                    @foreach($materialesLista as $material)
+                                    <tr 
+                                     @if($material->grupo_id != null)
+                                     class="registros {{str_slug($material->grupo->nombre)}}"
+                                     @else
+                                     class="registros"
+                                     @endif
+                                    >
                                         <td>
-                                            <a href="{{url('material/eliminar').'/'.$material->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
+                                            <a href="{{url('partidamaterial/eliminar').'/'.$material->id}}" class="btn btn-primary"> <i class="fa fa-trash"></i> </a>
                                         </td>
                                     	<td>
                                     		{{$material->material->nombre}}
@@ -262,6 +268,7 @@
                                         <td>
                                             @if($material->grupo_id != null)
                                             {{$material->grupo->nombre}}
+                                            <input type="hidden" name="gruponombre[]" value="{{str_slug($material->grupo->nombre)}}" class="nombregrupo">
                                             @endif
                                         </td>
                                         <td>
@@ -388,11 +395,13 @@ $material->formula = str_replace('%',"').val())",$material->formula);
         <input type="hidden" name="partida_id" value="{{$partida->id}}">
        
        <div class="table-responsive">
+        <input type="text" class="form-control" id="buscargrupo">
            <table class="table table-hover">
                <thead>
                    <th width="10px">Selecciconar</th>
                    <th>Nombre</th>
                </thead>
+               <tbody class="registrosgrupos">
                @foreach($grupos as $grupo)
                <tr>
                    <td align="right">
@@ -403,6 +412,7 @@ $material->formula = str_replace('%',"').val())",$material->formula);
                    </td>
                </tr>
                @endforeach
+               </tbody>
            </table>
        </div>
       
@@ -469,7 +479,28 @@ $material->formula = str_replace('%',"').val())",$material->formula);
           ],
           toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
         });
+        //Expandir grupos
+        //
+        nombreGrupo = 0;
         
+        $('.nombregrupo').each(function(){
+            
+            nombreNuevo = $(this).val();
+
+            if (nombreGrupo != nombreNuevo){
+                nombreGrupo = $(this).val();
+                $(this).parents('tr').before("<tr><td colspan='9'><a class='btn btn-primary ocultar' toggle='."+nombreGrupo+"' style='margin-left:40px;'> <i class='fa fa-eye'></i> </a> Grupo "+ nombreGrupo +"</td></tr>");
+            }
+
+
+        });
+
+        $('.ocultar').click(function(){
+            event.preventDefault();
+            clase = $(this).attr('toggle');
+                $(clase).toggle();
+            //alert(clase);
+        });
        //cambio de valores de campos personalizados
 
        $('.campos, .valores').change(function(){
@@ -491,7 +522,7 @@ $material->formula = str_replace('%',"').val())",$material->formula);
 
         $('input,.nombrepresupuesto').change(function(){
 
-            $('.datos tr').each(function(){
+            $('.registros').each(function(){
 
 
             //buscar formulas
@@ -529,10 +560,21 @@ $material->formula = str_replace('%',"').val())",$material->formula);
         });
 
         $(document).ready(function () {
+
         $('#filtro').keyup(function () {
       var rex = new RegExp($(this).val(), 'i');
         $('#registros tr').hide();
         $('#registros tr').filter(function () {
+            return rex.test($(this).text());
+        }).show();
+
+        })
+
+
+        $('#buscargrupo').keyup(function () {
+      var rex = new RegExp($(this).val(), 'i');
+        $('.registrosgrupos tr').hide();
+        $('.registrosgrupos tr').filter(function () {
             return rex.test($(this).text());
         }).show();
 

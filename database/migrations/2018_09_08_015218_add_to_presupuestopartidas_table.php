@@ -16,6 +16,7 @@ class AddToPresupuestopartidasTable extends Migration
         Schema::table('presupuestopartidas', function (Blueprint $table) {
             $table->longText('notas')->nullable();
             $table->longText('color')->nullable();
+            $table->string('nombre')->nullable();
         });
     }
 

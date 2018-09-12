@@ -81,6 +81,20 @@
                     </div>
 
                     <div class="col-md-8">
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Cantidad Global</h3>
+    </div>
+    <div class="col-md-3">
+        <h3 class="slugpartida">&PG%</h3>
+    </div>
+    <div class="col-md-3">
+        <label for="">Cantidad</label>
+        <input type="number" value="1" min="0" step="0.01" name="cantidadglobal" id="PG" class="form-control">
+    </div>
+</div>
+<hr>
                         @foreach($grupos as $grupo)
                         
                         <div id="grupo{{$grupo->id}}" class="toggle">
@@ -90,7 +104,7 @@
                                 <input type="hidden" name="grupo_id" value="{{$grupo->id}}">
                             <div class="row">
                     <div class="col-md-8">
-                        <select name="materiales[]" id="" title="Selecciones los materiales" class="selectpicker" multiple>
+                        <select name="materiales[]" title="Selecciones los materiales" class="selectpicker" multiple>
                             @foreach($materiales as $material)
                             <option value="{{$material->id}}">{{$material->nombre}}</option>
                             @endforeach
@@ -102,6 +116,7 @@
                     </div>
                     </div>
                         </form>
+                        
 
                             <h3>{{$grupo->nombre}}</h3>
                         <div class="table-responsive">
@@ -236,9 +251,9 @@ echo $material->formula;
   modal.find('.modal-body .grupo_id').val(id)
 })
 
-        $('input,.nombrepresupuesto').change(function(){
-
-            $('.datos tr').each(function(){
+        $('input').change(function(){
+            //$('.datos tr').each(function(){
+            $(this).parents('.datos').find('tr').each(function(){
 
 
             //buscar formulas

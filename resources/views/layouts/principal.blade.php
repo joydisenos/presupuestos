@@ -60,6 +60,15 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="{{asset('dist/js/sb-admin-2.js')}}"></script>
+    <script>
+window.onload=function(){
+var pos=window.name || 0;
+window.scrollTo(0,pos);
+}
+window.onunload=function(){
+window.name=self.pageYOffset || (document.documentElement.scrollTop+document.body.scrollTop);
+}
+</script>
 
     @yield('scripts')
 

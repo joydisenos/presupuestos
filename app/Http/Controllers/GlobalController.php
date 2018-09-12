@@ -68,13 +68,14 @@ class GlobalController extends Controller
         
         $partida             = Partida::findOrFail($id);
         $materiales          = Material::where('estatus','=',1)->get();
+        $materialesLista     = Partidamaterial::where('partida_id',$id)->get();
         $presupuestopartidas = Presupuestopartida::where('partida_id','=',$id)->get();
         $grupos              = Grupo::where('estatus',1)->get();
         $manos               = Mano::where('estatus','=',1)->get();
         $indirectos          = Indirecto::where('estatus','=',1)->get();
         $unidades            = Unidad::where('estatus','=',1)->get();
 
-        return view('partida',compact('partida','materiales','presupuestopartidas','manos','indirectos','unidades','grupos'));
+        return view('partida',compact('partida','materiales','presupuestopartidas','manos','indirectos','unidades','grupos','materialesLista'));
     }
 
     public function eliminarpartida($id)
@@ -393,6 +394,14 @@ class GlobalController extends Controller
         return redirect()->back()->with('status','Material Eliminado');
     }
 
+    public function eliminarpartidamaterial($id)
+    {
+        $material = Partidamaterial::findOrFail($id);
+        $material->delete();
+
+        return redirect()->back()->with('status','Material Eliminado');
+    }
+
     public function eliminarpresupuesto($id)
     {
         $presupuesto          = Presupuesto::findOrFail($id);
@@ -416,6 +425,7 @@ class GlobalController extends Controller
             $partidapadre        = Partida::findOrFail($partida);
             $pre                 = new Presupuestopartida();
             $pre->partida_id     = $partida;
+            $pre->nombre         = $partidapadre->nombre;
             $pre->numero         = '1';
             $pre->presupuesto_id = $request->presupuesto_id;
             $pre->unidad         = '';
@@ -465,10 +475,12 @@ class GlobalController extends Controller
         $manos        = $request->input('manos');
         $indirectos   = $request->input('indirectos');
         $numeros      = $request->input('numeros');
+        $nombres      = $request->input('nombres');
         //$cambios    = array_combine($partidas,$cantidades);
         $cambios2     = array_combine($partidas,$numeros);
         $cambios3     = array_combine($partidas,$manos);
         $cambios4     = array_combine($partidas,$indirectos);
+        $cambios5     = array_combine($partidas,$nombres);
 
         /*
         foreach ($cambios as $partida => $cantidad) {
@@ -493,6 +505,12 @@ class GlobalController extends Controller
         foreach ($cambios4 as $partida => $indirecto) {
             $partida               = Presupuestopartida::findOrFail($partida);
             $partida->indirecto_id = $indirecto;
+            $partida->save();
+        }
+
+        foreach ($cambios5 as $partida => $nombre) {
+            $partida               = Presupuestopartida::findOrFail($partida);
+            $partida->nombre = $nombre;
             $partida->save();
         }
 
@@ -585,6 +603,7 @@ class GlobalController extends Controller
             $partidapadre        = Partida::findOrFail($partida);
             $pre                 = new Presupuestopartida();
             $pre->partida_id     = $partida;
+            $pre->nombre         = $partidapadre->nombre;
             $pre->numero         = $key;
             $pre->presupuesto_id = $presupuesto->id;
             $pre->mano_id        = $partidapadre->mano_id;
@@ -960,7 +979,7 @@ class GlobalController extends Controller
                                             ->first();
                     $presupuestoId = $presupuesto->id;
                     $presupuestopartida = Presupuestopartida::where('partida_id',$partidaId)
-                                            ->where('presupuesto_id',$presupuestoId)
+                                            ->where('nombre', $presupuesto->nombre)
                                             ->first();
                     $indirecto = Indirecto::where('nombre', $data[16])->first();
                     $indirectoId = $indirecto->id;
@@ -1150,7 +1169,7 @@ class GlobalController extends Controller
                 $buscar = Partidamaterial::
                             where('partida_id',$request->partida_id)
                             ->where('material_id', $material->material->id)
-                            ->where('grupo', $grupoPri->id)
+                            ->where('grupo_id', $grupoPri->id)
                             ->first();
                 if ($buscar == null )
                 {
@@ -1187,6 +1206,7 @@ class GlobalController extends Controller
                 $buscar = SubMaterial::
                             where('presupuestopartida_id',$request->presupuestopartida_id)
                             ->where('material_id', $material->material->id)
+                            ->where('grupo_id', $grupoPri->id)
                             ->first();
                 if ($buscar == null )
                 {
@@ -1194,7 +1214,12 @@ class GlobalController extends Controller
                     $materialNuevo->presupuestopartida_id  = (int) $request->presupuestopartida_id;
                     $materialNuevo->material_id = $material->material->id;
                     $materialNuevo->presupuesto_id = $request->presupuesto_id;
-                    $materialNuevo->formula     = $material->formula;
+                    $materialNuevo->grupo_id    = $grupoPri->id;
+                    if($material->formula == null){
+                        $materialNuevo->formula     = '';
+                    }else{
+                        $materialNuevo->formula     = $material->formula;
+                    }
                     $materialNuevo->cantidad    = $material->cantidad;
                     $materialNuevo->save();
                 }

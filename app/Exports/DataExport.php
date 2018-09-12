@@ -27,6 +27,8 @@ class DataExport implements WithMultipleSheets
         $sheets[] = new PresupuestoPartidasExport;
         $sheets[] = new SubmaterialExport;
         $sheets[] = new MarcasExport;
+        $sheets[] = new GruposExport;
+        $sheets[] = new GruposMaterialesExport;
 
         return $sheets;
     }

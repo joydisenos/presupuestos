@@ -7,6 +7,7 @@
 		<td>{{$material->cantidad}}</td>
 		<td>{{$material->cantidad_partida}}</td>
 		<td>"{{$material->formula}}"</td>
+		<td>{{$material->grupo_id}}</td>
 	</tr>
 	@endforeach
 </table>
