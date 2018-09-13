@@ -52,6 +52,9 @@
                                 <li>
                                     <a href="{{url('historial')}}"><i class="fa fa-history fa-fw"></i> Historial</a>
                                 </li>
+                                <li>
+                                    <a href="{{url('papelera')}}"><i class="fa fa-recycle fa-fw"></i> Papelera</a>
+                                </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>

@@ -7,7 +7,11 @@
 		<td>{{$material->cantidad}}</td>
 		<td>{{$material->cantidad_partida}}</td>
 		<td>"{{$material->formula}}"</td>
-		<td>{{$material->grupo_id}}</td>
+		<td>
+			@if($material->grupo_id != null)
+			{{$material->grupo->nombre}}
+			@endif
+		</td>
 	</tr>
 	@endforeach
 </table>

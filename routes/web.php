@@ -69,11 +69,13 @@ Route::get('/presupuesto/{id}', 'GlobalController@presupuesto');
 Route::post('/presupuesto/nuevo', 'GlobalController@storepresupuesto');
 Route::post('/presupuesto/agregar', 'GlobalController@agregarpresupuesto');
 Route::get('historial', 'GlobalController@historial');
+Route::get('papelera', 'GlobalController@papelera');
 Route::post('actualizarpresupuesto', 'GlobalController@actualizarpresupuesto');
 Route::get('exportar/presupuesto/{id}', 'GlobalController@exportarpresupuesto');
 Route::get('eliminar/presupuesto/{id}', 'GlobalController@eliminarpresupuesto');
 Route::post('colorpresupuesto', 'GlobalController@colorpresupuesto');
 Route::post('agregarnotaspresupuesto', 'GlobalController@agregarnotaspresupuesto');
+Route::get('presupuesto/recuperar/{id}', 'GlobalController@recuperarpresupuesto');
 	//Globales
 Route::get('configuraciones', 'GlobalController@configuraciones');
 Route::post('configuraciones', 'GlobalController@actualizarconfiguraciones');

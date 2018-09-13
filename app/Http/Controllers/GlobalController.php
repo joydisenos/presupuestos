@@ -139,7 +139,7 @@ class GlobalController extends Controller
     {
 
          $validatedData = $request->validate([
-                'nombre' => 'required|string|min:3|unique:materials',
+                'nombre' => 'required|string|min:3',
                 'precio' => 'required|numeric',
                 'tipo' => 'required',
                 ]);
@@ -411,6 +411,15 @@ class GlobalController extends Controller
         return redirect()->back()->with('status','Presupuesto eliminado');
     }
 
+    public function recuperarpresupuesto($id)
+    {
+        $presupuesto          = Presupuesto::findOrFail($id);
+        $presupuesto->estatus = 1;
+        $presupuesto->save();
+
+        return redirect()->back()->with('status','Presupuesto eliminado');
+    }
+
     public function agregarpresupuesto(Request $request)
     {
 
@@ -582,6 +591,13 @@ class GlobalController extends Controller
         $presupuestos = Presupuesto::where('estatus','=',1)->get();
 
         return view('historial',compact('presupuestos'));
+    }
+
+    public function papelera()
+    {
+        $presupuestos = Presupuesto::where('estatus','=',0)->get();
+
+        return view('papelera',compact('presupuestos'));
     }
 
     public function storepresupuesto(Request $request)
@@ -884,6 +900,48 @@ class GlobalController extends Controller
                     }
                 }
 
+                $excel->setSheet(11); //Grupos
+                $collection = $excel->getCollection();
+        
+                foreach ($collection as $key => $data) {
+                    $grupo = Grupo::where('nombre',$data[1])
+                                            ->where('estatus',1)
+                                            ->first();
+                    
+                    if ($grupo == null)
+                    {
+                        $grupoEdit         = new Grupo();
+                        $grupoEdit->nombre = $data[1];
+                        $grupoEdit->save();
+                        $registros         += 1;
+                    }
+                }
+
+                $excel->setSheet(12); //Grupos
+                $collection = $excel->getCollection();
+        
+                foreach ($collection as $key => $data) {
+                    $grupo      = Grupo::where('nombre', $data[1])->first();
+                    $grupoId    = $grupo->id;
+                    $material   = Material::where('nombre',$data[0])->first();
+                    $materialId = $material->id;
+                    $grupo      = GrupoMaterial::where('material_id',$materialId)
+                                            ->where('grupo_id',$grupoId)
+                                            ->first();
+                    
+                    if ($grupo == null)
+                    {
+                        $formula = str_replace('"','',$data[2]);
+                        $grupoEdit              = new GrupoMaterial();
+                        $grupoEdit->material_id = $materialId;
+                        $grupoEdit->grupo_id    = $grupoId;
+                        $grupoEdit->formula     = $formula;
+                        $grupoEdit->cantidad    = $data[3];
+                        $grupoEdit->save();
+                        $registros         += 1;
+                    }
+                }
+
                 $excel->setSheet(5);
                 $collection = $excel->getCollection();
         
@@ -930,6 +988,11 @@ class GlobalController extends Controller
                     $material = Material::where('nombre', $data[1])
                                             ->first();
                     $materialId = $material->id;
+                    $grupo = Grupo::where('nombre',$data[4])->first();
+                    if($grupo != null)
+                    {
+                        $grupoId = $grupo->id;
+                    }
 
                     $partidamaterial = Partidamaterial::where('partida_id', $partidaId)
                                             ->where('material_id', $materialId)
@@ -944,6 +1007,9 @@ class GlobalController extends Controller
                         $partidamaterialedit->material_id = $materialId;
                         $partidamaterialedit->cantidad    = $data[2];
                         $partidamaterialedit->formula     = $formula;
+                        if($grupo != null){
+                            $partidamaterialedit->grupo_id    = $grupoId;
+                        }
                         $partidamaterialedit->save();
                         $registros                        += 1;
                     }
@@ -1029,6 +1095,11 @@ class GlobalController extends Controller
                                     where('nombre',$data[2])
                                     ->first();
                     $materialId = $material->id;
+                    $grupo = Grupo::where('nombre',$data[4])->first();
+                    if($grupo != null)
+                    {
+                        $grupoId = $grupo->id;
+                    }
                     $submaterial = Submaterial::
                             where('presupuestopartida_id',$partidapresupuestoId)
                             ->where('presupuesto_id', $presupuestoId)
@@ -1046,6 +1117,9 @@ class GlobalController extends Controller
                         $submaterialEdit->cantidad              = $data[3];
                         $submaterialEdit->cantidad_partida      = $data[4];
                         $submaterialEdit->formula               = $formula;
+                        if($grupo != null){
+                            $submaterialEdit->grupo_id          = $grupoId;
+                        }
                         $submaterialEdit->save();
                         $registros                 += 1;
                     }
@@ -1124,7 +1198,7 @@ class GlobalController extends Controller
     public function storegrupo(Request $request)
     {
         $validatedData = $request->validate([
-                'nombre' => 'required|string|min:3|unique:grupos',
+                'nombre' => 'required|string|min:3',
                 'materiales' => 'required',
             ]);
 
