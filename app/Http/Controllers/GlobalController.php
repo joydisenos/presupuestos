@@ -355,6 +355,7 @@ class GlobalController extends Controller
         $partida->mano_id          = $request->mano_id;
         $partida->indirecto_id     = $request->indirecto_id;
         $partida->color            = $request->color;
+        $partida->unidad            = $request->unidad;
         //$mano                    = $acumular * (((float)$partida->mano->precio)/100);
         //$indirecto               = $acumular * (((float)$partida->indirecto->precio)/100);
         $partida->total_materiales = $acumular;
@@ -912,6 +913,7 @@ class GlobalController extends Controller
                     {
                         $grupoEdit         = new Grupo();
                         $grupoEdit->nombre = $data[1];
+                        $grupoEdit->estatus = $data[2];
                         $grupoEdit->save();
                         $registros         += 1;
                     }
@@ -988,12 +990,16 @@ class GlobalController extends Controller
                     $material = Material::where('nombre', $data[1])
                                             ->first();
                     $materialId = $material->id;
-                    $grupo = Grupo::where('nombre',$data[4])->first();
-                    if($grupo != null)
+                    if($data[4] != 'n.a')
                     {
-                        $grupoId = $grupo->id;
+                                        $grupo = Grupo::where('nombre',$data[4])->first();
+                                        if($grupo != null)
+                                        {
+                                            $grupoId = $grupo->id;
+                                        }
+                    }else{
+                        $grupo = null;
                     }
-
                     $partidamaterial = Partidamaterial::where('partida_id', $partidaId)
                                             ->where('material_id', $materialId)
                                             ->first();
@@ -1044,8 +1050,9 @@ class GlobalController extends Controller
                     $presupuesto = Presupuesto::where('nombre', $data[1])
                                             ->first();
                     $presupuestoId = $presupuesto->id;
-                    $presupuestopartida = Presupuestopartida::where('partida_id',$partidaId)
-                                            ->where('nombre', $presupuesto->nombre)
+                    $presupuestopartida = Presupuestopartida::
+                                            where('partida_id',$partidaId)
+                                            ->where('nombre', $data[18])
                                             ->first();
                     $indirecto = Indirecto::where('nombre', $data[16])->first();
                     $indirectoId = $indirecto->id;
@@ -1073,6 +1080,7 @@ class GlobalController extends Controller
                         $presupuestopartidaEdit->total_materiales = $data[15];
                         $presupuestopartidaEdit->indirecto_id     = $indirectoId;
                         $presupuestopartidaEdit->mano_id          = $manoId;
+                        $presupuestopartidaEdit->nombre           = $data[18];
                         $presupuestopartidaEdit->save();
                         $registros                 += 1;
                     }
@@ -1095,10 +1103,15 @@ class GlobalController extends Controller
                                     where('nombre',$data[2])
                                     ->first();
                     $materialId = $material->id;
-                    $grupo = Grupo::where('nombre',$data[4])->first();
+                    if($data[6] != 'n.a')
+                    {
+                        $grupo = Grupo::where('nombre',$data[6])->first();
                     if($grupo != null)
                     {
                         $grupoId = $grupo->id;
+                    }
+                    }else{
+                        $grupo = null;
                     }
                     $submaterial = Submaterial::
                             where('presupuestopartida_id',$partidapresupuestoId)

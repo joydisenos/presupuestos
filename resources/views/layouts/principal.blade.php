@@ -41,7 +41,6 @@
 </head>
 
 <body>
-
    
 
     @yield('content')
@@ -71,6 +70,7 @@ window.name=self.pageYOffset || (document.documentElement.scrollTop+document.bod
 </script>
 
     @yield('scripts')
+    
 
 </body>
 

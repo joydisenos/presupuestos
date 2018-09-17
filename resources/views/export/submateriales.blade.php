@@ -10,6 +10,8 @@
 		<td>
 			@if($material->grupo_id != null)
 			{{$material->grupo->nombre}}
+			@else
+			n.a
 			@endif
 		</td>
 	</tr>

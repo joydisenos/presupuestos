@@ -87,6 +87,7 @@
                                         <th>Eliminar</th>
                                         <th>Número</th>
                                         <th>Nombre</th>
+                                        <th>Unidad</th>
                                         <th>Materiales</th>
                                         <th>Ver / Editar</th>
                                         <th>T. Materiales</th>
@@ -115,6 +116,9 @@
                                         </td>
                                         <td>
                                             <input type="text" class="form-control" value="{{$partida->nombre}}" name="nombres[]">
+                                        </td>
+                                        <td>
+                                            {{$partida->unidad}}
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#materiales{{$numero}}{{$partida->partida->id}}">

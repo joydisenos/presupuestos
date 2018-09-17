@@ -19,6 +19,7 @@
 		<td>{{$partida->total_materiales}}</td>
 		<td>{{$partida->indirecto->nombre}}</td>
 		<td>{{$partida->mano->nombre}}</td>
+		<td>{{$partida->nombre}}</td>
 	</tr>
 	@endforeach
 </table>

@@ -12,7 +12,7 @@
                     @include('includes.notificacion')
                 <div class="row">
                     <div class="col-md-6">
-                        <h1>Partida: {{$partida->partida->nombre}}</h1>
+                        <h1>Partida: {{$partida->nombre}}</h1>
                         <h1>presupuesto: {{$partida->presupuesto->id}}</h1>
                     </div>
 
@@ -212,7 +212,18 @@
     @endif
 
     <div class="row">
-        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <label for="">Seleccionar Unidad</label>
+            <select name="unidad" id="" class="form-control">
+                @foreach($unidades as $unidad)
+                <option value="{{$unidad->nombre}}"
+                    @if($partida->unidad == $unidad->nombre)
+                    selected
+                    @endif
+                    >{{$unidad->nombre}}</option>
+                @endforeach
+            </select>
+        </div>
         <div class="col-md-6">
             <label for="">Seleccionar Color</label>
             <input type="color" name="color"

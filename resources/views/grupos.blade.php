@@ -52,6 +52,12 @@
                         <h4>Grupos Registrados</h4>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="text" id="buscargrupo" class="form-control">
+                    </div>
+                </div>
                 
                 <div class="row">
                     <div class="col-md-4">
@@ -61,7 +67,7 @@
                             <th>Nombre</th>
                             <th>Ver materiales</th>
                         </thead>
-                        <tbody>
+                        <tbody class="registrosgrupos">
                             @foreach($grupos as $grupo)
                             <tr>
                                 <td>{{$grupo->nombre}}</td>
@@ -289,6 +295,15 @@ echo $material->formula;
             });
 
         });
+
+        $('#buscargrupo').keyup(function () {
+      var rex = new RegExp($(this).val(), 'i');
+        $('.registrosgrupos tr').hide();
+        $('.registrosgrupos tr').filter(function () {
+            return rex.test($(this).text());
+        }).show();
+
+        })
 
 
   
